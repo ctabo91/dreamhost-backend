@@ -1,0 +1,40 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "category": {
+            "type": "string"
+        },
+        "area": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "instructions": {
+            "type": "string"
+        },
+        "thumbnail": {
+            "type": "string"
+        },
+        "ingredients": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "category",
+        "area",
+        "instructions",
+        "ingredients"
+    ]
+}
