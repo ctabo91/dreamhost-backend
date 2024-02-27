@@ -43,3 +43,28 @@ CREATE TABLE favorite_drinks (
         REFERENCES drinks ON DELETE CASCADE,
     PRIMARY KEY (username, drink_id)
 );
+
+CREATE TABLE personal_meals (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    area TEXT NOT NULL,
+    instructions TEXT NOT NULL,
+    thumbnail TEXT,
+    ingredients TEXT[] NOT NULL,
+    username VARCHAR(25)
+        REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE personal_drinks (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    type TEXT NOT NULL,
+    glass TEXT,
+    instructions TEXT NOT NULL,
+    thumbnail TEXT,
+    ingredients TEXT[] NOT NULL,
+    username VARCHAR(25)
+        REFERENCES users ON DELETE CASCADE
+);

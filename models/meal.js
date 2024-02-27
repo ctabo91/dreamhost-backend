@@ -114,6 +114,20 @@ class Meal {
         return mealsRes.rows;
     }
 
+    /** Get all category names, with a count of how many items have that particular category 
+     * 
+     * Returns [ { category, count }, ...] 
+     */ 
+
+    static async getCategories() {
+        const categoriesRes = await db.query(
+                `SELECT category, COUNT(*)
+                 FROM meals
+                 GROUP BY category
+                 ORDER BY category`);
+        return categoriesRes.rows;
+    }
+
 
     /** Given a meal id, return data about meal.
      *

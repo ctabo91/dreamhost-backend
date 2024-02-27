@@ -4,8 +4,22 @@ const makeMealObj = (data) => {
     for (let i = 1; i <= 20; i++) {
         const ingredient = `strIngredient${i}`;
         const measurement = `strMeasure${i}`;
-        if (data[ingredient]) {
-            ingredientsResult.push(data[measurement] + ' ' + data[ingredient]);
+
+        const trimmedIngredient = data[ingredient]
+                                    ? data[ingredient].trim()
+                                    : null;
+        const trimmedMeasurement = data[measurement]
+                                    ? data[measurement].trim()
+                                    : null;
+                                    
+        if (trimmedIngredient && trimmedMeasurement) {
+            ingredientsResult.push(trimmedMeasurement + ' ' + trimmedIngredient);
+        }
+        else if (trimmedIngredient) {
+            ingredientsResult.push(trimmedIngredient);
+        }
+        else if (trimmedMeasurement) {
+            ingredientsResult.push(trimmedMeasurement);
         }
     }
 
@@ -28,8 +42,22 @@ const makeDrinkObj = (data) => {
     for (let i = 1; i <= 15; i++) {
         const ingredient = `strIngredient${i}`;
         const measurement = `strMeasure${i}`;
-        if (data[ingredient]) {
-            ingredientsResult.push(data[measurement] + ' ' + data[ingredient]);
+
+        const trimmedIngredient = data[ingredient]
+                                    ? data[ingredient].trim()
+                                    : null;
+        const trimmedMeasurement = data[measurement]
+                                    ? data[measurement].trim()
+                                    : null;
+
+        if (trimmedIngredient && trimmedMeasurement) {
+            ingredientsResult.push(trimmedMeasurement + ' ' + trimmedIngredient);
+        }
+        else if (trimmedIngredient) {
+            ingredientsResult.push(trimmedIngredient);
+        }
+        else if (trimmedMeasurement) {
+            ingredientsResult.push(trimmedMeasurement);
         }
     }
 

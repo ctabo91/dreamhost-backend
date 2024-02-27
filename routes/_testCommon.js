@@ -8,6 +8,8 @@ const { createToken } = require("../helpers/tokens");
 
 const testMealIds = [];
 const testDrinkIds = [];
+const testPersonalMealIds = [];
+const testPersonalDrinkIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -16,6 +18,10 @@ async function commonBeforeAll() {
   await db.query("DELETE FROM meals");
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM drinks");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM personal_meals");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM personal_drinks");
   
   //  Create meals 
   testMealIds[0] = (await Meal.create(
@@ -103,6 +109,56 @@ async function commonBeforeAll() {
 
   await User.markFavMeal("u1", testMealIds[0]);
   await User.markFavDrink("u1", testDrinkIds[0]);
+
+  //  Create personal meals
+  testPersonalMealIds[0] = (await User.createPersonalRecipe(
+      "u1", 
+      "meals", 
+      {
+        name: "P-M1",
+        category: "P-Cat1",
+        area: "P-A1",
+        instructions: "P-Inst1",
+        thumbnail: "http://P-M1.img",
+        ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+      })).id;
+  testPersonalMealIds[1] = (await User.createPersonalRecipe(
+      "u1", 
+      "meals", 
+      {
+        name: "P-M2",
+        category: "P-Cat2",
+        area: "P-A2",
+        instructions: "P-Inst2",
+        thumbnail: "http://P-M2.img",
+        ingredients: ["P-Ing2a", "P-Ing2b", "P-Ing2c"]
+      })).id;
+
+  //  Create personal drinks
+  testPersonalDrinkIds[0] = (await User.createPersonalRecipe(
+      "u1", 
+      "drinks", 
+      {
+        name: "P-D1",
+        category: "P-Cat1",
+        type: "P-T1",
+        glass: "P-G1",
+        instructions: "P-Inst1",
+        thumbnail: "http://P-D1.img",
+        ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+      })).id;
+  testPersonalDrinkIds[1] = (await User.createPersonalRecipe(
+      "u1", 
+      "drinks", 
+      {
+        name: "P-D2",
+        category: "P-Cat2",
+        type: "P-T2",
+        glass: "P-G2",
+        instructions: "P-Inst2",
+        thumbnail: "http://P-D2.img",
+        ingredients: ["P-Ing2a", "P-Ing2b", "P-Ing2c"]
+      })).id;
 }
 
 async function commonBeforeEach() {
@@ -129,6 +185,8 @@ module.exports = {
   commonAfterAll,
   testMealIds,
   testDrinkIds,
+  testPersonalMealIds,
+  testPersonalDrinkIds,
   u1Token,
   u2Token,
 };

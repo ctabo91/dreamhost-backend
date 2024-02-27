@@ -154,6 +154,30 @@ describe("GET /meals", function () {
   });
 });
 
+/************************************** GET /meals/categories */
+
+describe("GET /meals/categories", function () {
+  test("works for anon", async function () {
+    const resp = await request(app).get("/meals/categories");
+    expect(resp.body).toEqual({
+      categories: [
+        {
+          category: "Cat1",
+          count: "1",
+        },
+        {
+          category: "Cat2",
+          count: "1",
+        },
+        {
+          category: "Cat3",
+          count: "1",
+        },
+      ]
+    });
+  });
+});
+
 /************************************** GET /meals/:id */
 
 describe("GET /meals/:id", function () {

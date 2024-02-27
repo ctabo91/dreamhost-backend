@@ -117,6 +117,21 @@ class Drink {
     }
 
 
+    /** Get all category names, with a count of how many items have that particular category 
+     * 
+     * Returns [ { category, count }, ...] 
+     */ 
+
+    static async getCategories() {
+        const categoriesRes = await db.query(
+                `SELECT category, COUNT(*)
+                 FROM drinks
+                 GROUP BY category
+                 ORDER BY category`);
+        return categoriesRes.rows;
+    }
+
+
     /** Given a drink id, return data about drink.
      *
      * Returns { id, name, category, type, glass, instructions, thumbnail, ingredients }

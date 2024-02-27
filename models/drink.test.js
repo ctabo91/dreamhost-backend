@@ -126,6 +126,28 @@ describe("findAll", function () {
   });
 });
 
+/************************************** getCategories */
+
+describe("getCategories", function () {
+  test("works", async function () {
+    let categories = await Drink.getCategories();
+    expect(categories).toEqual([
+      {
+        category: "Cat1",
+        count: "1",
+      },
+      {
+        category: "Cat2",
+        count: "1",
+      },
+      {
+        category: "Cat3",
+        count: "1",
+      },
+    ]);
+  });
+});
+
 /************************************** get */
 
 describe("get", function () {

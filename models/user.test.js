@@ -14,6 +14,8 @@ const {
   commonAfterAll,
   testMealIds,
   testDrinkIds,
+  testPersonalMealIds,
+  testPersonalDrinkIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -212,6 +214,238 @@ describe("remove", function () {
   });
 });
 
+/************************************** getPersonalRecipes */
+
+describe("getPersonalRecipes", function () {
+  test("works", async function () {
+    let personalMeals = await User.getPersonalRecipes("u1", "meals");
+    let personalDrinks = await User.getPersonalRecipes("u1", "drinks");
+
+    expect(personalMeals).toEqual([
+      {
+        id: testPersonalMealIds[0],
+        name: "P-M1",
+        category: "P-Cat1",
+        area: "P-A1",
+        instructions: "P-Inst1",
+        thumbnail: "http://P-M1.img",
+        ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+      },
+      {
+        id: testPersonalMealIds[1],
+        name: "P-M2",
+        category: "P-Cat2",
+        area: "P-A2",
+        instructions: "P-Inst2",
+        thumbnail: "http://P-M2.img",
+        ingredients: ["P-Ing2a", "P-Ing2b", "P-Ing2c"]
+      },
+      {
+        id: testPersonalMealIds[2],
+        name: "P-M3",
+        category: "P-Cat3",
+        area: "P-A3",
+        instructions: "P-Inst3",
+        thumbnail: "http://P-M3.img",
+        ingredients: ["P-Ing3a", "P-Ing3b", "P-Ing3c"]
+      },
+    ]);
+
+    expect(personalDrinks).toEqual([
+      {
+        id: testPersonalDrinkIds[0],
+        name: "P-D1",
+        category: "P-Cat1",
+        type: "P-T1",
+        glass: "P-G1",
+        instructions: "P-Inst1",
+        thumbnail: "http://P-D1.img",
+        ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+      },
+      {
+        id: testPersonalDrinkIds[1],
+        name: "P-D2",
+        category: "P-Cat2",
+        type: "P-T2",
+        glass: "P-G2",
+        instructions: "P-Inst2",
+        thumbnail: "http://P-D2.img",
+        ingredients: ["P-Ing2a", "P-Ing2b", "P-Ing2c"]
+      },
+      {
+        id: testPersonalDrinkIds[2],
+        name: "P-D3",
+        category: "P-Cat3",
+        type: "P-T3",
+        glass: "P-G3",
+        instructions: "P-Inst3",
+        thumbnail: "http://P-D3.img",
+        ingredients: ["P-Ing3a", "P-Ing3b", "P-Ing3c"]
+      },
+    ]);
+  });
+});
+
+/************************************** createPersonalRecipe */
+
+describe("createPersonalRecipe", function () {
+  let newPersonalMeal = {
+    name: "New P-M",
+    category: "New P-Cat",
+    area: "New P-A",
+    instructions: "New P-Inst",
+    thumbnail: "http://New P-M.img",
+    ingredients: ["New P-Ing1", "New P-Ing1", "New P-Ing1"]
+  };
+  let newPersonalDrink = {
+    name: "New P-D",
+    category: "New P-Cat",
+    type: "New P-T",
+    glass: "New P-G",
+    instructions: "New P-Inst",
+    thumbnail: "http://New P-D.img",
+    ingredients: ["New P-Ing1", "New P-Ing1", "New P-Ing1"]
+  };
+
+  test("works", async function () {
+    let personalMeal = await User.createPersonalRecipe("u1", "meals", newPersonalMeal);
+    let personalDrink = await User.createPersonalRecipe("u1", "drinks", newPersonalDrink);
+
+    expect(personalMeal).toEqual({
+      ...newPersonalMeal,
+      id: expect.any(Number),
+    });
+    expect(personalDrink).toEqual({
+      ...newPersonalDrink,
+      id: expect.any(Number),
+    });
+  });
+});
+
+/************************************** getPersonalRecipe */
+
+describe("getPersonalRecipe", function () {
+  test("works", async function () {
+    let personalMeal = await User.getPersonalRecipe(testPersonalMealIds[0], "u1", "meals");
+    let personalDrink = await User.getPersonalRecipe(testPersonalDrinkIds[0], "u1", "drinks");
+
+    expect(personalMeal).toEqual({
+      id: testPersonalMealIds[0],
+      name: "P-M1",
+      category: "P-Cat1",
+      area: "P-A1",
+      instructions: "P-Inst1",
+      thumbnail: "http://P-M1.img",
+      ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+    });
+
+    expect(personalDrink).toEqual({
+      id: testPersonalDrinkIds[0],
+      name: "P-D1",
+      category: "P-Cat1",
+      type: "P-T1",
+      glass: "P-G1",
+      instructions: "P-Inst1",
+      thumbnail: "http://P-D1.img",
+      ingredients: ["P-Ing1a", "P-Ing1b", "P-Ing1c"]
+    });
+  });
+
+  test("not found if no such personal meal", async function () {
+    try {
+      await User.getPersonalRecipe(0, "u1", "meals");
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found if no such personal drink", async function () {
+    try {
+      await User.getPersonalRecipe(0, "u1", "drinks");
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** updatePersonalRecipe */
+
+describe("updatePersonalRecipe", function () {
+  let personalMealUpdate = {
+    name: "New P-M",
+    category: "New P-Cat",
+    area: "New P-A",
+    instructions: "New P-Inst",
+    thumbnail: "http://New P-M.img",
+    ingredients: ["New P-Ing1", "New P-Ing1", "New P-Ing1"]
+  };
+  let personalDrinkUpdate = {
+    name: "New P-D",
+    category: "New P-Cat",
+    type: "New P-T",
+    glass: "New P-G",
+    instructions: "New P-Inst",
+    thumbnail: "http://New P-D.img",
+    ingredients: ["New P-Ing1", "New P-Ing1", "New P-Ing1"]
+  };
+
+  test("works", async function () {
+    let personalMeal = await User.updatePersonalRecipe(testPersonalMealIds[0], "meals", personalMealUpdate);
+    let personalDrink = await User.updatePersonalRecipe(testPersonalDrinkIds[0], "drinks", personalDrinkUpdate);
+
+    expect(personalMeal).toEqual({
+      id: testPersonalMealIds[0],
+      ...personalMealUpdate,
+    });
+    expect(personalDrink).toEqual({
+      id: testPersonalDrinkIds[0],
+      ...personalDrinkUpdate,
+    });
+  });
+
+  test("not found if no such personal meal", async function () {
+    try {
+      await User.updatePersonalRecipe(0, "meals", {
+        name: "test",
+      });
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found if no such personal drink", async function () {
+    try {
+      await User.updatePersonalRecipe(0, "drinks", {
+        name: "test",
+      });
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("bad request with no meal update data", async function () {
+    try {
+      await User.updatePersonalRecipe(testPersonalMealIds[0], "meals", {});
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+  test("bad request with no drink update data", async function () {
+    try {
+      await User.updatePersonalRecipe(testPersonalDrinkIds[0], "drinks", {});
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});
+
 /************************************** markFavMeal */
 
 describe("markFavMeal", function () {
@@ -219,7 +453,7 @@ describe("markFavMeal", function () {
     await User.markFavMeal("u1", testMealIds[1]);
 
     const res = await db.query(
-        "SELECT * FROM favorite_meals WHERE meal_id=$1", [testMealIds[1]]);
+        "SELECT * FROM favorite_meals WHERE meal_id=$1 AND username=$2", [testMealIds[1], "u1"]);
     expect(res.rows).toEqual([{
       meal_id: testMealIds[1],
       username: "u1",
@@ -228,7 +462,7 @@ describe("markFavMeal", function () {
 
   test("not found if no such meal", async function () {
     try {
-      await User.markFavMeal("u1", 0, "favorited");
+      await User.markFavMeal("u1", 0);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -237,7 +471,37 @@ describe("markFavMeal", function () {
 
   test("not found if no such user", async function () {
     try {
-      await User.markFavMeal("nope", testMealIds[0], "favorited");
+      await User.markFavMeal("nope", testMealIds[0]);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** unmarkFavMeal */
+
+describe("unmarkFavMeal", function () {
+  test("works", async function () {
+    await User.unmarkFavMeal("u1", testMealIds[0]);
+
+    const res = await db.query(
+        "SELECT * FROM favorite_meals WHERE meal_id=$1 AND username=$2", [testMealIds[0], "u1"]);
+    expect(res.rows).toEqual([]);
+  });
+
+  test("not found if no such meal", async function () {
+    try {
+      await User.unmarkFavMeal("u1", 0);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found if no such user", async function () {
+    try {
+      await User.unmarkFavMeal("nope", testMealIds[0]);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -252,7 +516,7 @@ describe("markFavDrink", function () {
     await User.markFavDrink("u1", testDrinkIds[1]);
 
     const res = await db.query(
-        "SELECT * FROM favorite_drinks WHERE drink_id=$1", [testDrinkIds[1]]);
+        "SELECT * FROM favorite_drinks WHERE drink_id=$1 AND username=$2", [testDrinkIds[1], "u1"]);
     expect(res.rows).toEqual([{
       drink_id: testDrinkIds[1],
       username: "u1",
@@ -261,7 +525,7 @@ describe("markFavDrink", function () {
 
   test("not found if no such drink", async function () {
     try {
-      await User.markFavDrink("u1", 0, "favorited");
+      await User.markFavDrink("u1", 0);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -270,7 +534,37 @@ describe("markFavDrink", function () {
 
   test("not found if no such user", async function () {
     try {
-      await User.markFavDrink("nope", testDrinkIds[0], "favorited");
+      await User.markFavDrink("nope", testDrinkIds[0]);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** unmarkFavDrink */
+
+describe("unmarkFavDrink", function () {
+  test("works", async function () {
+    await User.unmarkFavDrink("u1", testDrinkIds[0]);
+
+    const res = await db.query(
+        "SELECT * FROM favorite_drinks WHERE drink_id=$1 AND username=$2", [testDrinkIds[0], "u1"]);
+    expect(res.rows).toEqual([]);
+  });
+
+  test("not found if no such drink", async function () {
+    try {
+      await User.unmarkFavDrink("u1", 0);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("not found if no such user", async function () {
+    try {
+      await User.unmarkFavDrink("nope", testDrinkIds[0]);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();

@@ -20,20 +20,21 @@ const router = express.Router();
 router.get("/dump", async (req, res, next) => {
     try {
         const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-        let allDrinks = [];
-        for (let i = 0; i < letters.length; i++) {
-            let response = await axios.get(`${DRINK_BASE_URL}/search.php?f=${letters[i]}`);
-            let drinks = response.data.drinks;
+        
+        const requests = letters.map(async letter => {
+            const response = await axios.get(`${DRINK_BASE_URL}/search.php?f=${letter}`);
+            const drinks = response.data.drinks;
             if (drinks !== null) {
-                for (let j = 0; j < drinks.length; j++) {
-                    let drink = makeDrinkObj(drinks[j]);
-                    allDrinks.push(drink);
-                }
+                return drinks.map(drink => makeDrinkObj(drink));
             }
-        }
+            return [];
+        });
+
+        const drinksArrays = await Promise.all(requests);
+        const allDrinks = [].concat(...drinksArrays);
 
         Drink.dumpData(allDrinks);
-        
+
         return res.json({ allDrinks });
     } catch (err) {
         return next(err);
@@ -84,6 +85,21 @@ router.get("/", async (req, res, next) => {
         }
         const drinks = await Drink.findAll(q);
         return res.json({ drinks });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET /categories => 
+ *    { categories: [ { category, count }, ...] }
+ * 
+ * Authorization required: none
+ */ 
+
+router.get("/categories", async (req, res, next) => {
+    try {
+        const categories = await Drink.getCategories();
+        return res.json({ categories });
     } catch (err) {
         return next(err);
     }

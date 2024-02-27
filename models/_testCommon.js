@@ -5,6 +5,8 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 const testMealIds = [];
 const testDrinkIds = [];
+const testPersonalMealIds = [];
+const testPersonalDrinkIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -13,6 +15,10 @@ async function commonBeforeAll() {
   await db.query("DELETE FROM drinks");
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM personal_meals");
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM personal_drinks");
 
   const resultsMeals = await db.query(`
     INSERT INTO meals (name, category, area, instructions, thumbnail, ingredients)
@@ -53,6 +59,22 @@ async function commonBeforeAll() {
         INSERT INTO favorite_drinks(username, drink_id)
         VALUES ('u1', $1)`,
       [testDrinkIds[0]]);
+
+  const resultsPersonalMeals = await db.query(`
+    INSERT INTO personal_meals (name, category, area, instructions, thumbnail, ingredients, username)
+    VALUES ('P-M1', 'P-Cat1', 'P-A1', 'P-Inst1', 'http://P-M1.img', ARRAY['P-Ing1a', 'P-Ing1b', 'P-Ing1c'], 'u1'),
+            ('P-M2', 'P-Cat2', 'P-A2', 'P-Inst2', 'http://P-M2.img', ARRAY['P-Ing2a', 'P-Ing2b', 'P-Ing2c'], 'u1'),
+            ('P-M3', 'P-Cat3', 'P-A3', 'P-Inst3', 'http://P-M3.img', ARRAY['P-Ing3a', 'P-Ing3b', 'P-Ing3c'], 'u1')
+    RETURNING id`);
+  testPersonalMealIds.splice(0, 0, ...resultsPersonalMeals.rows.map(r => r.id));
+
+  const resultsPersonalDrinks = await db.query(`
+    INSERT INTO personal_drinks (name, category, type, glass, instructions, thumbnail, ingredients, username)
+    VALUES ('P-D1', 'P-Cat1', 'P-T1', 'P-G1', 'P-Inst1', 'http://P-D1.img', ARRAY['P-Ing1a', 'P-Ing1b', 'P-Ing1c'], 'u1'),
+            ('P-D2', 'P-Cat2', 'P-T2', 'P-G2', 'P-Inst2', 'http://P-D2.img', ARRAY['P-Ing2a', 'P-Ing2b', 'P-Ing2c'], 'u1'),
+            ('P-D3', 'P-Cat3', 'P-T3', 'P-G3', 'P-Inst3', 'http://P-D3.img', ARRAY['P-Ing3a', 'P-Ing3b', 'P-Ing3c'], 'u1')
+    RETURNING id`);
+  testPersonalDrinkIds.splice(0, 0, ...resultsPersonalDrinks.rows.map(r => r.id));
 }
 
 async function commonBeforeEach() {
@@ -75,4 +97,6 @@ module.exports = {
   commonAfterAll,
   testMealIds,
   testDrinkIds,
+  testPersonalMealIds,
+  testPersonalDrinkIds,
 };

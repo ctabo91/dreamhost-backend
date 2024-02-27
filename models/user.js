@@ -213,6 +213,201 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 
+  /** Given a username and type (meals or drinks), find all of the peronal recipes associated to that user, of the given type.
+   * 
+   * if type = "meals":
+   * Returns [ { id, name, category, area, instructions, thumbnail, ingredients }, ...] 
+   * 
+   * if type = "drinks":
+   * Returns [ { id, name, category, type, glass, instructions, thumbnail, ingredients }, ...] 
+   **/ 
+
+  static async getPersonalRecipes(username, type) {
+    const result = type === "meals"
+            ? await db.query(
+                    `SELECT id,
+                            name,
+                            category,
+                            area,
+                            instructions,
+                            thumbnail,
+                            ingredients
+                    FROM personal_meals
+                    WHERE username = $1
+                    ORDER BY name`,
+                  [username]
+              )
+            :
+              await db.query(
+                    `SELECT id,
+                            name,
+                            category,
+                            type,
+                            glass,
+                            instructions,
+                            thumbnail,
+                            ingredients
+                    FROM personal_drinks
+                    WHERE username = $1
+                    ORDER BY name`,
+                  [username]
+              );
+
+    return result.rows;
+  }
+
+  /** Given a username and type (meals or drinks), create a personalRecipe according to the type, using the data that is passed.
+   * 
+   * data should be:
+   * 
+   * -if meal { name, category, area, instructions, thumbnail, ingredients }
+   *
+   * Returns { id, name, category, area, instructions, thumbnail, ingredients }
+   * 
+   * -if drink { name, category, type, glass, instructions, thumbnail, ingredients }
+   * 
+   * Returns { id, name, category, type, glass, instructions, thumbnail, ingredients }
+   **/ 
+
+  static async createPersonalRecipe(username, type, data) {
+    const result = type === "meals"
+            ? await db.query(
+                    `INSERT INTO personal_meals
+                     (name, category, area, instructions, thumbnail, ingredients, username)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7)
+                     RETURNING id, name, category, area, instructions, thumbnail, ingredients`,
+                  [
+                    data.name,
+                    data.category,
+                    data.area,
+                    data.instructions,
+                    data.thumbnail,
+                    data.ingredients,
+                    username
+                  ]
+              )
+            :
+              await db.query(
+                    `INSERT INTO personal_drinks
+                    (name, category, type, glass, instructions, thumbnail, ingredients, username)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    RETURNING id, name, category, type, glass, instructions, thumbnail, ingredients`,
+                  [
+                    data.name,
+                    data.category,
+                    data.type,
+                    data.glass,
+                    data.instructions,
+                    data.thumbnail,
+                    data.ingredients,
+                    username
+                  ]
+              );
+
+    const personalRecipe = result.rows[0];
+
+    return personalRecipe;
+  }
+
+  /** Given a username and type (meals or drinks), return data about a personalRecipe.
+   * 
+   * if type = meals:
+   * 
+   * Returns { id, name, category, area, instructions, thumbnail, ingredients }
+   * 
+   * if type = drinks:
+   * 
+   * Returns { id, name, category, type, glass, instructions, thumbnail, ingredients }
+   * 
+   * Throws NotFoundError if not found.
+   **/ 
+
+  static async getPersonalRecipe(id, username, type) {
+    const result = type === "meals"
+             ? await db.query(`SELECT id,
+                                      name,
+                                      category,
+                                      area,
+                                      instructions,
+                                      thumbnail,
+                                      ingredients
+                               FROM personal_meals
+                               WHERE id = $1 AND username = $2`,
+                            [id, username])
+             :
+               await db.query(`SELECT id,
+                                      name,
+                                      category,
+                                      type,
+                                      glass,
+                                      instructions,
+                                      thumbnail,
+                                      ingredients
+                               FROM personal_drinks
+                               WHERE id = $1 AND username = $2`,
+                            [id, username]);
+
+    const personalRecipe = result.rows[0];
+
+    if (!personalRecipe) throw new NotFoundError(`No personal ${type}: ${id}`);
+
+    return personalRecipe;
+  }
+
+  /** Given a username and type (meals or drinks), update the personalRecipe data according to the type, with data that is passed
+   * 
+   * This is a "partial update" --- it's fine if data doesn't contain all the
+   * fields; this only changes provided ones.
+   * 
+   * Data can include:
+   * 
+   * -if type = meal { name, category, area, instructions, thumbnail, ingredients }
+   *
+   * Returns { id, name, category, area, instructions, thumbnail, ingredients }
+   * 
+   * -if type = drink { name, category, type, glass, instructions, thumbnail, ingredients }
+   * 
+   * Returns { id, name, category, type, glass, instructions, thumbnail, ingredients }
+   * 
+   * Throws NotFoundError if not found.
+   **/ 
+
+  static async updatePersonalRecipe(id, type, data) {
+    const { setCols, values } = sqlForPartialUpdate(data);
+    const idVarIdx = "$" + (values.length + 1);
+
+    const querySql = type === "meals"
+            ? `UPDATE personal_meals 
+               SET ${setCols} 
+               WHERE id = ${idVarIdx} 
+               RETURNING id, 
+                         name, 
+                         category, 
+                         area, 
+                         instructions,
+                         thumbnail,
+                         ingredients`
+            :
+              `UPDATE personal_drinks 
+               SET ${setCols} 
+               WHERE id = ${idVarIdx} 
+               RETURNING id, 
+                         name, 
+                         category, 
+                         type,
+                         glass,
+                         instructions,
+                         thumbnail,
+                         ingredients`;
+
+    const result = await db.query(querySql, [...values, id]);
+    const personalRecipe = result.rows[0];
+
+    if (!personalRecipe) throw new NotFoundError(`No personal ${type}: ${id}`);
+
+    return personalRecipe;
+  }
+
   /** Favorite a meal: update db, returns undefined.
    *
    * - username: username favoriting meal
@@ -238,7 +433,37 @@ class User {
 
     await db.query(
           `INSERT INTO favorite_meals (meal_id, username)
-           VALUES ($1, $2)`,
+           VALUES ($1, $2)
+           ON CONFLICT (meal_id, username) DO NOTHING`,
+        [mealId, username]);
+  }
+
+  /** Unfavorite a meal: update db, returns undefined.
+   *
+   * - username: username unfavoriting meal
+   * - mealId: meal id
+   **/
+
+  static async unmarkFavMeal(username, mealId) {
+    const preCheck = await db.query(
+          `SELECT id
+           FROM meals
+           WHERE id = $1`, [mealId]);
+    const meal = preCheck.rows[0];
+
+    if (!meal) throw new NotFoundError(`No meal: ${mealId}`);
+
+    const preCheck2 = await db.query(
+          `SELECT username
+           FROM users
+           WHERE username = $1`, [username]);
+    const user = preCheck2.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
+    await db.query(
+          `DELETE FROM favorite_meals
+           WHERE meal_id = $1 AND username = $2`,
         [mealId, username]);
   }
 
@@ -267,7 +492,37 @@ class User {
 
     await db.query(
           `INSERT INTO favorite_drinks (drink_id, username)
-           VALUES ($1, $2)`,
+           VALUES ($1, $2)
+           ON CONFLICT (drink_id, username) DO NOTHING`,
+        [drinkId, username]);
+  }
+
+  /** Unfavorite a drink: update db, returns undefined.
+   *
+   * - username: username unfavoriting drink
+   * - mealId: drink id
+   **/
+
+  static async unmarkFavDrink(username, drinkId) {
+    const preCheck = await db.query(
+          `SELECT id
+           FROM drinks
+           WHERE id = $1`, [drinkId]);
+    const drink = preCheck.rows[0];
+
+    if (!drink) throw new NotFoundError(`No drink: ${drinkId}`);
+
+    const preCheck2 = await db.query(
+          `SELECT username
+           FROM users
+           WHERE username = $1`, [username]);
+    const user = preCheck2.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
+    await db.query(
+          `DELETE FROM favorite_drinks
+           WHERE drink_id = $1 AND username = $2`,
         [drinkId, username]);
   }
 }

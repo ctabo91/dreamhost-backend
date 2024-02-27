@@ -119,6 +119,28 @@ describe("findAll", function () {
   });
 });
 
+/************************************** getCategories */
+
+describe("getCategories", function () {
+  test("works", async function () {
+    let categories = await Meal.getCategories();
+    expect(categories).toEqual([
+      {
+        category: "Cat1",
+        count: "1",
+      },
+      {
+        category: "Cat2",
+        count: "1",
+      },
+      {
+        category: "Cat3",
+        count: "1",
+      },
+    ]);
+  });
+});
+
 /************************************** get */
 
 describe("get", function () {

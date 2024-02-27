@@ -163,6 +163,30 @@ describe("GET /drinks", function () {
   });
 });
 
+/************************************** GET /drinks/categories */
+
+describe("GET /drinks/categories", function () {
+  test("works for anon", async function () {
+    const resp = await request(app).get("/drinks/categories");
+    expect(resp.body).toEqual({
+      categories: [
+        {
+          category: "Cat1",
+          count: "1",
+        },
+        {
+          category: "Cat2",
+          count: "1",
+        },
+        {
+          category: "Cat3",
+          count: "1",
+        },
+      ]
+    });
+  });
+});
+
 /************************************** GET /drinks/:id */
 
 describe("GET /drinks/:id", function () {
