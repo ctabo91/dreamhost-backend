@@ -9,24 +9,29 @@
             "maxLength": 30
         },
         "category": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
         },
         "type": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
         },
         "glass": {
             "type": "string"
         },
         "instructions": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
         },
         "thumbnail": {
             "type": "string"
         },
         "ingredients": {
             "type": "array",
+            "minItems": 1,
             "items": {
-                "type": "string"
+                "type": "string",
+                "minLength": 1
             }
         }
     },
