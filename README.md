@@ -43,15 +43,15 @@ After creating a user profile or logging in, users are welcomed with a personali
 From here, the user has the following options available to them in the **NavBar**:
 
 - ***Recipes Dropdown:***
-	- **Meals***(list of all meals)*
-	- **Drinks***(list of all drinks)*
-	- **Meal Categories***(list of meal categories)*
-	- **Drink Categories***(list of drink categories)*
+	- **Meals**(*list of all meals*)
+	- **Drinks**(*list of all drinks*)
+	- **Meal Categories**(*list of meal categories*)
+	- **Drink Categories**(*list of drink categories*)
 - ***Personal Dropdown:***
-	- **Create Meal***(form to create a personal meal)*
-	- **Create Drink***(form to create a personal drink)*
-	- **Personal Meals***(list of personal meals already created)*
-	- **Personal Drinks***(list of personal drinks already created)*
+	- **Create Meal**(*form to create a personal meal*)
+	- **Create Drink**(*form to create a personal drink*)
+	- **Personal Meals**(*list of personal meals already created*)
+	- **Personal Drinks**(*list of personal drinks already created*)
 - ***Profile:***
 	- form that shows user profile information, with the ability to update it
 - ***Logout:***
@@ -66,7 +66,7 @@ There are also two buttons directly below the search form:
 
 - A `Filter by Category` button, which takes the user to the list of respective page's categories
 - A `Show Favorites` button, which takes the user to a list of recipes, of that specific type, that they have favorited
-	- when clicked, the button changes to a `Back to All Meals` or `Back to All Drinks` button*(depending on whether the user is on the **Meals** or **Drinks** page)*
+	- when clicked, the button changes to a `Back to All Meals` or `Back to All Drinks` button(*depending on whether the user is on the **Meals** or **Drinks** page*)
 
 #### `Meal Categories`/`Drink Categories`
 When the user clicks on **Meal Categories** or **Drink Categories**, they are taken to the list of the respective categories available.  
@@ -80,11 +80,11 @@ Each recipe that is listed on the page is shown as a link, which provides a pict
 
 - for **Meals**:
 	- name
-	- area*(where the meal is from)*
+	- area(*where the meal is from*)
 	- ingredients list
 - for **Drinks**:
 	- name
-	- type*(Alcoholic or Non-Alcoholic)*
+	- type(*Alcoholic or Non-Alcoholic*)
 	- ingredients list
 
 When a recipe is clicked on, the user is taken to a full details page for that recipe.  
@@ -118,16 +118,16 @@ The input fields on this form are as follows:
 	- Category
 	- Area
 	- Instructions
-	- Thumbnail*(optional field for an image of the recipe)*
+	- Thumbnail(*optional field for an image of the recipe*)
 	- Ingredients list
 	- form to add an ingredient to the list
 - for **Drinks**:
 	- Name
 	- Category
-	- Type*(Radio field with options for either Alcoholic or Non-Alcoholic)*
-	- Glass*(optional field for recommended serving glass)*
+	- Type(*Radio field with options for either Alcoholic or Non-Alcoholic*)
+	- Glass(*optional field for recommended serving glass*)
 	- Instructions
-	- Thumbnail*(optional field for an image of the recipe)*
+	- Thumbnail(*optional field for an image of the recipe*)
 	- Ingredients list
 	- form to add an ingredient to the list
 
