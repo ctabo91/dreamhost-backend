@@ -1,5 +1,5 @@
-#*DreamHost*
-##Site Link
+# *DreamHost*
+## Site Link
 
 ## API Links
 
@@ -8,7 +8,7 @@
 ### Drinks
 [https://www.thecocktaildb.com/api.php](https://www.thecocktaildb.com/api.php)
 
-##Application
+## Application
 The purpose of this app is to allow users access to a database full of different recipes for both *meals* and *drinks*.  
 In addition to this, they can create and store their own personal recipes.   
 I've chosen to gather my information from two different APIs:  
@@ -28,12 +28,12 @@ I've chosen to gather my information from two different APIs:
 - CSS  
 
 
-##Tests
+## Tests
 Test files are located in the same folder as the JS file that they are testing.  
 You can run all tests with `npm test` or individually with `npm test test_file_name`
 
 
-##User Flow
+## User Flow
 When first opening the application, the user is welcomed with the message: **"Welcome To DreamHost"**.  
 If the user already has a profile, they can log in through the **Login** link in the **NavBar**.  
 If not, they can sign up using the **Sign Up** link.  
@@ -58,8 +58,8 @@ From here, the user has the following options available to them in the **NavBar*
 	- logs out the user
 
 
-###Recipes Dropdown
-####`Meals`/`Drinks`
+### Recipes Dropdown
+#### `Meals`/`Drinks`
 When the user clicks on **Meals** or **Drinks**, they are taken to a list of all the respective recipes available in the database.  
 On this page there is a **Search** form that allows the user to search for recipes by name.  
 There are also two buttons directly below the search form:
@@ -68,14 +68,14 @@ There are also two buttons directly below the search form:
 - A `Show Favorites` button, which takes the user to a list of recipes, of that specific type, that they have favorited
 	- when clicked, the button changes to a `Back to All Meals` or `Back to All Drinks` button*(depending on whether the user is on the **Meals** or **Drinks** page)*
 
-####`Meal Categories`/`Drink Categories`
+#### `Meal Categories`/`Drink Categories`
 When the user clicks on **Meal Categories** or **Drink Categories**, they are taken to the list of the respective categories available.  
 
 Each **Category** is displayed on a link that shows the category *name* and a *count* for how many recipes are in that category.  
 
 Clicking on a category will take the user to a list of all recipes that are in that category.  
 
-#####Recipes List:
+##### Recipes List:
 Each recipe that is listed on the page is shown as a link, which provides a picture and minimal information for the recipe:
 
 - for **Meals**:
@@ -106,8 +106,8 @@ Included on this page is:
 - a heart icon, which, when clicked, adds/removes the recipe to/from the user's favorites list.
 
 
-###Personal Dropdown
-####`Create Meal`/`Create Drink`
+### Personal Dropdown
+#### `Create Meal`/`Create Drink`
 When the user clicks on **Create Meal** or **Create Drink**, they are taken to a form to create a personal respective recipe.
 > ***It's important to note that the recipes created here will only be visible to the user that created them***
 
@@ -135,7 +135,7 @@ Each ingredient in the ***Ingredients list*** has a trash icon next to it, to re
 
 When this form is submitted, the user is redirected to the **Home** page, and the recipe is added to either ***Personal Meals*** or ***Personal Drinks***, depending on the form that was submitted.
 
-####`Personal Meals`/`Personal Drinks`
+#### `Personal Meals`/`Personal Drinks`
 When the user clicks on **Personal Meals** or **Personal Drinks**, they are taken to a list of respective *personal* recipes.  
 
 This list is very similar to the *all* **Meals** or **Drinks** list, with the exception of the **Search** form, the `Filter by Category` button, and the `Show Favorites` button.  
@@ -147,6 +147,6 @@ This details page is identical to the details page for all other recipes, with t
 Instead of the heart icon, an `Edit Recipe` button is shown, which, when clicked, takes the user to a form to update that specific recipe.
 
 
-###Profile
+### Profile
 When the user clicks on **Profile**, they are taken to a form that displays the user's profile information.  
 Here, they have the option to update their profile, with the exception of the username.
